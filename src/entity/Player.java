@@ -30,7 +30,6 @@ public class Player extends Entity {
 
     public void getPlayerImage() {
         try {
-            System.out.println("Carregando imagens");
             up1 = ImageIO.read(new FileInputStream("res/player/boy_up_1.png"));
             up2 = ImageIO.read(new FileInputStream("res/player/boy_up_2.png"));
             down1 = ImageIO.read(new FileInputStream("res/player/boy_down_1.png"));
@@ -39,7 +38,6 @@ public class Player extends Entity {
             left2 = ImageIO.read(new FileInputStream("res/player/boy_left_2.png"));
             right1 = ImageIO.read(new FileInputStream("res/player/boy_right_1.png"));
             right2 = ImageIO.read(new FileInputStream("res/player/boy_right_2.png"));
-            System.out.println("Finalizando imagens");
         } catch (IOException e) {
             e.printStackTrace();
         }
