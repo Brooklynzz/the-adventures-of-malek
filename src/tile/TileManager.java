@@ -15,11 +15,15 @@ public class TileManager {
     public TileManager(GamePanel gp) {
         this.gp = gp;
         tile = new Tile[10];
-        mapTileNum = new int[gp.maxScreenCol][gp.maxScreenRow];
+        mapTileNum = new int[gp.maxWorldCol][gp.maxWorldRow];
 
         getTileImage();
-        loadMap("/mapa/map.txt");
+        loadMap("/maps/world01.txt");
     }
+
+    /**
+     * Método que carrega as imagens dos tiles, que constam na pasta res/tiles
+     */
 
     public void getTileImage() {
         try {
@@ -31,10 +35,26 @@ public class TileManager {
 
             tile[2] = new Tile();
             tile[2].image = ImageIO.read(new FileInputStream("res/tiles/water.png"));
+
+            tile[3] = new Tile();
+            tile[3].image = ImageIO.read(new FileInputStream("res/tiles/earth.png"));
+
+            tile[4] = new Tile();
+            tile[4].image = ImageIO.read(new FileInputStream("res/tiles/tree.png"));
+
+            tile[5] = new Tile();
+            tile[5].image = ImageIO.read(new FileInputStream("res/tiles/sand.png"));
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
+
+    /**
+     * Método que recebe os dados do mapa, que consta em res/maps.
+     * O recebimento funciona através de um BufferedReader, que lê linha por linha do txt do mapa e armazena
+     * os dados de cada tile em um array
+     * @param filePath
+     */
 
     public void loadMap(String filePath) {
         try {
@@ -44,43 +64,55 @@ public class TileManager {
             int col = 0;
             int row = 0;
 
-            while(col < gp.maxScreenCol && row < gp.maxScreenRow) {
+            while(col < gp.maxWorldCol && row < gp.maxWorldRow) {
                 String line = br.readLine();
 
-                while (col < gp.maxScreenCol) {
+                while (col < gp.maxWorldCol) {
                     String numbers[] = line.split(" ");
                     int num = Integer.parseInt(numbers[col]);
 
                     mapTileNum[col][row] = num;
                     col++;
                 }
-                if(col == gp.maxScreenCol) {
+                if(col == gp.maxWorldCol) {
                     col = 0;
                     row++;
                 }
             }
         } catch(Exception e) {
-
         }
     }
 
+    /**
+     * Método que define o desenho do mapa e o controle de câmera, para melhor performance do jogo, apenas são
+     * renderizados os tiles dentro do range de câmera, ou seja, apenas os que o player consegue ver.
+     * @param g2
+     */
+
     public void draw(Graphics2D g2) {
-        int col = 0;
-        int row = 0;
-        int x = 0;
-        int y = 0;
+        int worldCol = 0;
+        int worldRow = 0;
 
-        while(col < gp.maxScreenCol && row < gp.maxScreenRow) {
-            int tileNum = mapTileNum[col][row];
-            g2.drawImage(tile[tileNum].image, x, y, gp.tileSize, gp.tileSize, null);
-            col++;
-            x += gp.tileSize;
+        while(worldCol < gp.maxWorldCol && worldRow < gp.maxWorldRow) {
 
-            if(col == gp.maxScreenCol) {
-                col = 0;
-                x = 0;
-                row++;
-                y += gp.tileSize;
+            int tileNum = mapTileNum[worldCol][worldRow];
+
+            int worldX = worldCol * gp.tileSize;
+            int worldY = worldRow * gp.tileSize;
+            int screenX = worldX - gp.player.worldX + gp.player.screenX;
+            int screenY = worldY - gp.player.worldY + gp.player.screenY;
+
+            if (worldX + gp.tileSize > gp.player.worldX - gp.player.screenX &&
+                worldX - gp.tileSize < gp.player.worldX + gp.player.screenX &&
+                worldY + gp.tileSize > gp.player.worldY - gp.player.screenY &&
+                worldY - gp.tileSize < gp.player.worldY + gp.player.screenY) {
+                g2.drawImage(tile[tileNum].image, screenX, screenY, gp.tileSize, gp.tileSize, null);
+            }
+            worldCol++;
+
+            if(worldCol == gp.maxWorldCol) {
+                worldCol = 0;
+                worldRow++;
             }
         }
     }
