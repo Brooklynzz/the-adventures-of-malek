@@ -58,9 +58,9 @@ public class Player extends Entity {
             } else if (keyH.downPressed == true) {
                 direction = "down";
             } else if (keyH.leftPressed == true) {
-                direction = "right";
-            } else if (keyH.rightPressed) {
                 direction = "left";
+            } else if (keyH.rightPressed) {
+                direction = "right";
             }
             /**
              * Checa a colisão do terreno
@@ -75,9 +75,9 @@ public class Player extends Entity {
                         break;
                     case "down": worldY += speed;
                         break;
-                    case "right": worldX -= speed;
+                    case "right": worldX += speed;
                         break;
-                    case "left": worldX += speed;
+                    case "left": worldX -= speed;
                         break;
                 }
             }
@@ -114,7 +114,7 @@ public class Player extends Entity {
                     image = down2;
                 }
                 break;
-            case "right":
+            case "left":
                 if(spriteNum == 1) {
                     image = left1;
                 }
@@ -122,7 +122,7 @@ public class Player extends Entity {
                     image = left2;
                 }
                 break;
-            case "left":
+            case "right":
                 if(spriteNum == 1) {
                     image = right1;
                 }
