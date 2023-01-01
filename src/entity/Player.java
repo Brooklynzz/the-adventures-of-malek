@@ -15,6 +15,7 @@ public class Player extends Entity {
 
     public final int screenX;
     public final int screenY;
+    int hasKey = 0;
 
     public Player(GamePanel gp, KeyHandler keyH) {
         this.gp = gp;
@@ -24,6 +25,8 @@ public class Player extends Entity {
         screenY = gp.screenHeight/2 - (gp.tileSize/2);
 
         solidArea = new Rectangle(8, 16, 32, 32);
+        solidAreaDefaultX = 8;
+        solidAreaDefaultY = 16;
 
         setDefaultValues();
         getPlayerImage();
@@ -68,6 +71,12 @@ public class Player extends Entity {
 
             collisionOn = false;
             gp.cChecker.checkTile(this);
+            /**
+             * Checa a colisão dos objetos
+             */
+
+            int objIndex = gp.cChecker.checkObject(this, true);
+            pickUpObject(objIndex);
 
             if (collisionOn == false) {
                 switch (direction) {
@@ -75,9 +84,9 @@ public class Player extends Entity {
                         break;
                     case "down": worldY += speed;
                         break;
-                    case "right": worldX += speed;
-                        break;
                     case "left": worldX -= speed;
+                        break;
+                    case "right": worldX += speed;
                         break;
                 }
             }
@@ -89,6 +98,27 @@ public class Player extends Entity {
                     spriteNum = 1;
                 }
                 spriteCounter = 0;
+            }
+        }
+    }
+
+    public void pickUpObject(int i) {
+        if (i != 999) {
+            String objectName = gp.obj[i].name;
+
+            switch (objectName) {
+                case "Key":
+                    hasKey++;
+                    gp.obj[i] = null;
+                    System.out.println("Key:" + hasKey);
+                    break;
+                case "Door":
+                    if (hasKey > 0) {
+                        gp.obj[i] = null;
+                        hasKey--;
+                    System.out.println("Key:" + hasKey);
+                    }
+                    break;
             }
         }
     }
