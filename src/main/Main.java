@@ -1,9 +1,10 @@
 package main;
 
 import javax.swing.*;
+import java.net.MalformedURLException;
 
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws MalformedURLException {
         JFrame window = new JFrame();
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         window.setResizable(false);
